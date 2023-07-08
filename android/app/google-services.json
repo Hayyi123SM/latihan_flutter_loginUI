@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486894575630",
+    "project_id": "pinjam-buku-c71d3",
+    "storage_bucket": "pinjam-buku-c71d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486894575630:android:e26806c848b9a321e45c5f",
+        "android_client_info": {
+          "package_name": "com.example.login_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486894575630-jdiqekgnvdes8m0lgd3dom6q7v5u6cjj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmmV2TgjgLLXHnoBfI2PYEtPA6pPfl6P8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486894575630-jdiqekgnvdes8m0lgd3dom6q7v5u6cjj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

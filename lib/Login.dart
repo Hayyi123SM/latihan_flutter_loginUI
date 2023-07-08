@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:login_ui/dashboard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 class LoginDemo extends StatefulWidget {
+  TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController passwordController = TextEditingController(text: "");
+
   @override
   _LoginDemoState createState() => _LoginDemoState();
 }
 
-class _LoginDemoState extends State<LoginDemo> {
+  class _LoginDemoState extends State<LoginDemo> {
+
   @override
   Widget build(BuildContext context){
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       // Membuat backround dari scaffold menjadi abu-abu dengan kadar 100
       backgroundColor: Colors.grey[100],
@@ -41,6 +51,7 @@ class _LoginDemoState extends State<LoginDemo> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               // Membuat inputan text Email
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
@@ -56,6 +67,7 @@ class _LoginDemoState extends State<LoginDemo> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               // Membuat inputan password
               child: TextField(
+                controller: passwordController,
                 // Membuat agar karakter dari inputan password di hide
                 obscureText: true,
                 decoration: InputDecoration(
@@ -90,11 +102,22 @@ class _LoginDemoState extends State<LoginDemo> {
               child: SizedBox(
                 height: 50,
                 width: double.infinity,
+                // Memuat tombol submit
                 child: ElevatedButton(
-                  onPressed: (){
-                    // Navigasi ketika tombol login di tekan
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (_) => Dashboard()));
+                  onPressed: () async{
+                    //Melakukan cek apakah data / cookie user masih ada
+                    if(FirebaseAuth.instance.currentUser == null){
+                      // Melakukan try untuk login dengan user & password
+                      try{
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text
+                        );
+                        // Mengambil exception ketika terjadi error saat proses login
+                      }on FirebaseAuthException catch(e){
+                        showNotivication(context, e.message.toString());
+                      }
+                    }
                   },
                   child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 20),),
                 ),
@@ -102,28 +125,44 @@ class _LoginDemoState extends State<LoginDemo> {
             ),
             // Box kosong untuk mengatur jarak antara widget
             SizedBox(
-              height: 145,
+              height: 10,
             ),
             Padding(
               // Mengatur padding secara horizontal
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                // Mengatur agar widget dari text berada di tengah
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('New user?'),
-                  TextButton(
-                      onPressed: (){
-
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                height: 50,
+                width: double.infinity,
+                // membuat tombol submit
+                child: ElevatedButton(
+                      onPressed: () async {
+                        // Melakukan try untuk login dengan user & password
+                        if(FirebaseAuth.instance.currentUser == null){
+                          try{
+                            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                            // Mengambil exception ketika terjadi error saat proses login
+                          } on FirebaseAuthException catch(e){
+                            showNotivication(context, e.message.toString());
+                          }
+                        }
                       },
-                      child: Text('Create an Account', style: TextStyle(color: Colors.blue),)
-                  )
-                ],
+                      child: Text('Sign Up', style: TextStyle(color: Colors.white, fontSize: 20),)
+                  ),
               ),
             )
           ],
         ),
       ),
     );
+  }
+
+  // Membuat fungsi notivikasi untuk error proses login & sign up
+  void showNotivication(BuildContext context, String message){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.yellowAccent.shade700,
+      content: Text(message.toString()),));
   }
 }
